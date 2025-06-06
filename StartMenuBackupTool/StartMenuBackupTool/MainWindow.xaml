@@ -5,8 +5,334 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:StartMenuBackupTool"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="Windows 11 시작 메뉴 백업 도구" 
+        Height="650" Width="1000"
+        WindowStartupLocation="CenterScreen"
+        MinHeight="550" MinWidth="800">
+    
+    <Window.Resources>
+        <!-- Modern Colors -->
+        <SolidColorBrush x:Key="PrimaryColor" Color="#0078D4"/>
+        <SolidColorBrush x:Key="SecondaryColor" Color="#005A9E"/>
+        <SolidColorBrush x:Key="AccentColor" Color="#40E0D0"/>
+        <SolidColorBrush x:Key="BackgroundColor" Color="#F3F3F3"/>
+        <SolidColorBrush x:Key="CardBackground" Color="White"/>
+        
+        <!-- Modern Button Style -->
+        <Style x:Key="ModernButton" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="15,10"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="5"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource SecondaryColor}"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="#CCCCCC"/>
+                    <Setter Property="Foreground" Value="#666666"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
 
+        <!-- Secondary Button Style -->
+        <Style x:Key="SecondaryButton" TargetType="Button" BasedOn="{StaticResource ModernButton}">
+            <Setter Property="Background" Value="#28A745"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#218838"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="#CCCCCC"/>
+                    <Setter Property="Foreground" Value="#666666"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Danger Button Style -->
+        <Style x:Key="DangerButton" TargetType="Button" BasedOn="{StaticResource ModernButton}">
+            <Setter Property="Background" Value="#DC3545"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#C82333"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="#CCCCCC"/>
+                    <Setter Property="Foreground" Value="#666666"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Card Style -->
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource CardBackground}"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="Padding" Value="20"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect ShadowDepth="2" BlurRadius="5" Opacity="0.1"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- TextBox Style -->
+        <Style x:Key="ModernTextBox" TargetType="TextBox">
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#DDDDDD"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="5">
+                            <ScrollViewer Margin="0" x:Name="PART_ContentHost"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="{StaticResource PrimaryColor}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid Background="{StaticResource BackgroundColor}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="{StaticResource PrimaryColor}" Padding="20">
+            <StackPanel>
+                <TextBlock Text="Windows 11 시작 메뉴 백업 도구" 
+                           FontSize="24" FontWeight="Bold" 
+                           Foreground="White"/>
+                <TextBlock Text="시작 메뉴 레이아웃을 백업하고 복원합니다" 
+                           FontSize="14" 
+                           Foreground="#E0E0E0" 
+                           Margin="0,5,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Main Content -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="450"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Left Panel - Create Backup -->
+            <Border Grid.Column="0" Style="{StaticResource CardStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="새 백업 만들기" 
+                               FontSize="20" FontWeight="SemiBold" 
+                               Margin="0,0,0,20"/>
+
+                    <StackPanel Grid.Row="1">
+                        <TextBlock Text="백업 이름" FontWeight="Medium" Margin="0,0,0,5"/>
+                        <TextBox Text="{Binding NewBackupName, UpdateSourceTrigger=PropertyChanged}" 
+                                 Style="{StaticResource ModernTextBox}"
+                                 Margin="0,0,0,15"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="2">
+                        <TextBlock Text="설명 (선택사항)" FontWeight="Medium" Margin="0,0,0,5"/>
+                        <TextBox Text="{Binding NewBackupDescription}" 
+                                 Style="{StaticResource ModernTextBox}"
+                                 Height="80"
+                                 TextWrapping="Wrap"
+                                 AcceptsReturn="True"
+                                 VerticalScrollBarVisibility="Auto"
+                                 Margin="0,0,0,20"/>
+                    </StackPanel>
+
+                    <Button Grid.Row="3" 
+                            Command="{Binding CreateBackupCommand}"
+                            Style="{StaticResource ModernButton}"
+                            HorizontalAlignment="Stretch">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="➕" Margin="0,0,10,0" FontSize="16"/>
+                            <TextBlock Text="백업 생성"/>
+                        </StackPanel>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- Right Panel - Backup List -->
+            <Border Grid.Column="1" Style="{StaticResource CardStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0" Margin="0,0,0,20">
+                        <TextBlock Text="백업 목록" 
+                                   FontSize="20" FontWeight="SemiBold" 
+                                   VerticalAlignment="Center"/>
+                        <Button Command="{Binding RefreshBackupsCommand}"
+                                Style="{StaticResource ModernButton}"
+                                HorizontalAlignment="Right"
+                                Padding="10,5">
+                            <TextBlock Text="🔄 새로고침" FontSize="12"/>
+                        </Button>
+                    </Grid>
+
+                    <ListBox Grid.Row="1" 
+                             ItemsSource="{Binding Backups}"
+                             SelectedItem="{Binding SelectedBackup}"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             BorderThickness="0"
+                             Background="Transparent"
+                             MouseDoubleClick="ListBox_MouseDoubleClick">
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Margin" Value="0,0,0,10"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListBoxItem">
+                                            <Border x:Name="Border" 
+                                                    Background="#F9F9F9" 
+                                                    CornerRadius="5" 
+                                                    Padding="15"
+                                                    BorderThickness="2"
+                                                    BorderBrush="Transparent">
+                                                <ContentPresenter/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource PrimaryColor}"/>
+                                                    <Setter TargetName="Border" Property="Background" Value="#E8F4FD"/>
+                                                </Trigger>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="Border" Property="Background" Value="#F0F0F0"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="{Binding Name}" 
+                                                   FontWeight="SemiBold" 
+                                                   FontSize="16"/>
+                                        <TextBlock FontSize="12" Foreground="#666666">
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="{}{0:yyyy년 MM월 dd일 HH:mm} • {1:N0} KB">
+                                                    <Binding Path="BackupDate"/>
+                                                    <Binding Path="FileSize" Converter="{x:Static local:FileSizeConverter.Instance}"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                        <TextBlock FontSize="11" Foreground="#888888" Margin="0,2,0,0">
+                                            <TextBlock.Text>
+                                                <Binding Path="BackupPath" Converter="{x:Static local:FileNameConverter.Instance}"/>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                        <TextBlock Text="{Binding Description}" 
+                                                   FontSize="12" 
+                                                   Foreground="#888888" 
+                                                   TextTrimming="CharacterEllipsis"
+                                                   Margin="0,5,0,0"
+                                                   Visibility="{Binding Description, Converter={x:Static local:StringToVisibilityConverter.Instance}}"/>
+                                    </StackPanel>
+                                    <TextBlock Grid.Column="1" 
+                                               Text="✓" 
+                                               FontSize="20" 
+                                               Foreground="Green" 
+                                               VerticalAlignment="Center"
+                                               Visibility="{Binding IsValid, Converter={x:Static local:BooleanToVisibilityConverter.Instance}}"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <StackPanel Grid.Row="2" 
+                                Orientation="Horizontal" 
+                                HorizontalAlignment="Right"
+                                Margin="0,10,0,0">
+                        <Button Command="{Binding EditBackupCommand}"
+                                Style="{StaticResource SecondaryButton}"
+                                Margin="0,0,10,0">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="✏️" Margin="0,0,10,0" FontSize="16"/>
+                                <TextBlock Text="편집"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Command="{Binding RestoreBackupCommand}"
+                                Style="{StaticResource ModernButton}"
+                                Margin="0,0,10,0">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="♻️" Margin="0,0,10,0" FontSize="16"/>
+                                <TextBlock Text="복원"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Command="{Binding DeleteBackupCommand}"
+                                Style="{StaticResource DangerButton}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="🗑️" Margin="0,0,10,0" FontSize="16"/>
+                                <TextBlock Text="삭제"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- Status Bar -->
+        <Border Grid.Row="2" Background="#2C2C2C" Padding="10,5">
+            <Grid>
+                <TextBlock Text="{Binding StatusMessage}" 
+                           Foreground="White" 
+                           FontSize="12"
+                           VerticalAlignment="Center"/>
+                <ProgressBar IsIndeterminate="True" 
+                             Height="3" 
+                             VerticalAlignment="Center"
+                             HorizontalAlignment="Right"
+                             Width="100"
+                             Visibility="{Binding IsProcessing, Converter={x:Static local:BooleanToVisibilityConverter.Instance}}"/>
+            </Grid>
+        </Border>
     </Grid>
 </Window>
