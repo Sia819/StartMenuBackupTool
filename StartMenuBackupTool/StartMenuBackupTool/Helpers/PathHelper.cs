@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 
 namespace StartMenuBackupTool.Helpers
@@ -54,4 +53,4 @@ namespace StartMenuBackupTool.Helpers
             }
         }
     }
-} 
+}

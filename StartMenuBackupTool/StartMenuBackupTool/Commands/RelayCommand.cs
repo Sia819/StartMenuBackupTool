@@ -1,4 +1,3 @@
-using System;
 using System.Windows.Input;
 
 namespace StartMenuBackupTool.Commands
@@ -35,4 +34,4 @@ namespace StartMenuBackupTool.Commands
             CommandManager.InvalidateRequerySuggested();
         }
     }
-} 
+}

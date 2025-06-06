@@ -1,13 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Diagnostics;
-using System.Text.Json;
 using StartMenuBackupTool.Helpers;
 using StartMenuBackupTool.Models;
+using System.Diagnostics;
+using System.IO;
+using System.IO.Compression;
+using System.Text.Json;
 
 namespace StartMenuBackupTool.Services
 {
@@ -104,17 +100,17 @@ namespace StartMenuBackupTool.Services
                         foreach (var directory in Directory.GetDirectories(tempPath))
                         {
                             var dirName = Path.GetFileName(directory);
-                            
+
                             // 메타데이터 파일은 건너뛰기
                             if (dirName == "backup_metadata.json") continue;
-                            
+
                             var targetPath = _foldersToBackup.FirstOrDefault(f => Path.GetFileName(f) == dirName);
 
                             if (targetPath != null && Directory.Exists(targetPath))
                             {
                                 // 기존 파일 백업 (선택적)
                                 var backupSuffix = $"_backup_{DateTime.Now:yyyyMMddHHmmss}";
-                                
+
                                 // 파일 복원
                                 CopyDirectory(directory, targetPath, true);
                             }
@@ -146,7 +142,7 @@ namespace StartMenuBackupTool.Services
             {
                 // Explorer 프로세스 찾기
                 var explorerProcesses = Process.GetProcessesByName("explorer");
-                
+
                 // 실행 중인 Explorer가 없는 경우 바로 시작
                 if (explorerProcesses.Length == 0)
                 {
@@ -157,7 +153,7 @@ namespace StartMenuBackupTool.Services
                     });
                     return;
                 }
-                
+
                 // 모든 Explorer 프로세스 종료
                 foreach (var process in explorerProcesses)
                 {
@@ -200,7 +196,7 @@ namespace StartMenuBackupTool.Services
                 {
                     // 무시
                 }
-                
+
                 throw new Exception($"Explorer 재시작 중 오류가 발생했습니다: {ex.Message}", ex);
             }
         }
@@ -295,10 +291,10 @@ namespace StartMenuBackupTool.Services
         {
             var existingBackups = GetBackupListAsync().Result;
             var untitledCount = existingBackups.Count(b => b.Name.StartsWith("Untitled"));
-            
+
             if (untitledCount == 0)
                 return "Untitled";
-            
+
             return $"Untitled ({untitledCount + 1})";
         }
 
@@ -322,7 +318,7 @@ namespace StartMenuBackupTool.Services
         private void AddDirectoryToZip(ZipArchive archive, string sourceDir, string entryName)
         {
             var files = Directory.GetFiles(sourceDir, "*", SearchOption.AllDirectories);
-            
+
             foreach (var file in files)
             {
                 var relativePath = Path.GetRelativePath(sourceDir, file);
@@ -368,7 +364,7 @@ namespace StartMenuBackupTool.Services
 
                     // 임시 파일 경로
                     var tempFile = Path.GetTempFileName();
-                    
+
                     try
                     {
                         // 기존 ZIP 파일 복사 (메타데이터 제외)
@@ -419,4 +415,4 @@ namespace StartMenuBackupTool.Services
             });
         }
     }
-} 
+}

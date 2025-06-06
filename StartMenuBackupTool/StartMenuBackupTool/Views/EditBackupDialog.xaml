@@ -1,13 +1,14 @@
 <Window x:Class="StartMenuBackupTool.Views.EditBackupDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="백업 정보 편집" 
-        Height="300" Width="450"
+        MinHeight="300" MinWidth="400"
+        MaxHeight="600" MaxWidth="700"
         WindowStartupLocation="CenterOwner"
-        ResizeMode="NoResize"
+        ResizeMode="CanResizeWithGrip"
         ShowInTaskbar="False">
 
     <Window.Resources>
@@ -88,24 +89,35 @@
         </Border>
 
         <!-- Content -->
-        <StackPanel Grid.Row="1" Margin="20">
-            <TextBlock Text="백업 이름" 
+        <Grid Grid.Row="1" Margin="20,20,20,10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0"
+                       Text="백업 이름" 
                        FontWeight="Medium" 
                        Margin="0,0,0,5"/>
-            <TextBox x:Name="NameTextBox"
+            <TextBox Grid.Row="1"
+                     x:Name="NameTextBox"
                      Style="{StaticResource ModernTextBox}"
-                     Margin="0,0,0,15"/>
+                     Margin="0,0,0,20"/>
 
-            <TextBlock Text="설명 (선택사항)" 
+            <TextBlock Grid.Row="2"
+                       Text="설명 (선택사항)" 
                        FontWeight="Medium" 
                        Margin="0,0,0,5"/>
-            <TextBox x:Name="DescriptionTextBox"
+            <TextBox Grid.Row="3"
+                     x:Name="DescriptionTextBox"
                      Style="{StaticResource ModernTextBox}"
-                     Height="80"
                      TextWrapping="Wrap"
                      AcceptsReturn="True"
-                     VerticalScrollBarVisibility="Auto"/>
-        </StackPanel>
+                     VerticalScrollBarVisibility="Auto"
+                     VerticalAlignment="Stretch"
+                     MinHeight="100"/>
+        </Grid>
 
         <!-- Buttons -->
         <Border Grid.Row="2" 

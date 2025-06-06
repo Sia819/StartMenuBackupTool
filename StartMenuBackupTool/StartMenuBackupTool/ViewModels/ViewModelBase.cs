@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace StartMenuBackupTool.ViewModels
 {
-    public abstract class BaseViewModel : INotifyPropertyChanged
+    public abstract class ViewModelBase : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -22,4 +22,4 @@ namespace StartMenuBackupTool.ViewModels
             return true;
         }
     }
-} 
+}

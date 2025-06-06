@@ -1,5 +1,3 @@
-using System;
-
 namespace StartMenuBackupTool.Models
 {
     public class BackupInfo
@@ -12,4 +10,4 @@ namespace StartMenuBackupTool.Models
         public long FileSize { get; set; }
         public bool IsValid { get; set; } = true;
     }
-} 
+}

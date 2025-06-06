@@ -1,20 +1,17 @@
-using System;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
 using StartMenuBackupTool.Commands;
 using StartMenuBackupTool.Models;
 using StartMenuBackupTool.Services;
 using StartMenuBackupTool.Views;
+using System.Collections.ObjectModel;
+using System.Windows;
+using System.Windows.Input;
 
 namespace StartMenuBackupTool.ViewModels
 {
-    public class MainViewModel : BaseViewModel
+    public class MainViewModel : ViewModelBase
     {
         private readonly StartMenuBackupService _backupService;
-        
+
         private ObservableCollection<BackupInfo> _backups;
         private BackupInfo? _selectedBackup;
         private string _newBackupName = string.Empty;
@@ -100,7 +97,7 @@ namespace StartMenuBackupTool.ViewModels
                 StatusMessage = "백업 목록을 불러오는 중...";
 
                 var backups = await _backupService.GetBackupListAsync();
-                
+
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     Backups.Clear();
@@ -131,7 +128,7 @@ namespace StartMenuBackupTool.ViewModels
                 StatusMessage = "백업을 생성하는 중...";
 
                 var backup = await _backupService.CreateBackupAsync(NewBackupName, NewBackupDescription);
-                
+
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     Backups.Insert(0, backup);
@@ -236,7 +233,7 @@ namespace StartMenuBackupTool.ViewModels
                         {
                             SelectedBackup.Name = backupCopy.Name;
                             SelectedBackup.Description = backupCopy.Description;
-                            
+
                             // ObservableCollection에 변경 알림
                             Backups[index] = SelectedBackup;
                             var temp = SelectedBackup;
@@ -303,4 +300,4 @@ namespace StartMenuBackupTool.ViewModels
             }
         }
     }
-} 
+}

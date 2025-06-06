@@ -1,10 +1,9 @@
-using System;
 using System.Globalization;
 using System.IO;
 using System.Windows;
 using System.Windows.Data;
 
-namespace StartMenuBackupTool
+namespace StartMenuBackupTool.Helpers
 {
     // Boolean을 Visibility로 변환
     public class BooleanToVisibilityConverter : IValueConverter
@@ -89,4 +88,4 @@ namespace StartMenuBackupTool
             throw new NotImplementedException();
         }
     }
-} 
+}
