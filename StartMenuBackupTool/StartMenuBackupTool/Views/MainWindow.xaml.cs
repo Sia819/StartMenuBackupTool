@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using StartMenuBackupTool.ViewModels;
+using StartMenuBackupTool.Properties;
 
 namespace StartMenuBackupTool
 {
@@ -14,14 +15,17 @@ namespace StartMenuBackupTool
     {
         public MainWindow()
         {
+            // ViewModel 설정 (Title 바인딩을 위해 먼저 설정)
+            DataContext = new MainViewModel();
+            
             InitializeComponent();
             
             // 관리자 권한 확인
             if (!IsRunAsAdministrator())
             {
                 var result = MessageBox.Show(
-                    "이 프로그램은 관리자 권한이 필요합니다.\n관리자 권한으로 다시 실행하시겠습니까?",
-                    "관리자 권한 필요",
+                    Properties.Resources.AdminRequiredMessage,
+                    Properties.Resources.AdminRequired,
                     MessageBoxButton.YesNo,
                     MessageBoxImage.Warning);
 
@@ -30,9 +34,6 @@ namespace StartMenuBackupTool
                     RestartAsAdministrator();
                 }
             }
-
-            // ViewModel 설정
-            DataContext = new MainViewModel();
         }
 
         private static bool IsRunAsAdministrator()
@@ -58,7 +59,7 @@ namespace StartMenuBackupTool
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"관리자 권한으로 실행할 수 없습니다: {ex.Message}", "오류", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"{Properties.Resources.Error}: {ex.Message}", Properties.Resources.Error, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

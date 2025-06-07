@@ -1,5 +1,6 @@
 using StartMenuBackupTool.Helpers;
 using StartMenuBackupTool.Models;
+using StartMenuBackupTool.Properties;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
@@ -71,7 +72,7 @@ namespace StartMenuBackupTool.Services
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception($"백업 생성 중 오류가 발생했습니다: {ex.Message}", ex);
+                    throw new Exception($"{Resources.BackupCreationError}: {ex.Message}", ex);
                 }
             });
         }
@@ -85,7 +86,7 @@ namespace StartMenuBackupTool.Services
                 {
                     if (!File.Exists(backupFilePath))
                     {
-                        throw new FileNotFoundException("백업 파일을 찾을 수 없습니다.", backupFilePath);
+                        throw new FileNotFoundException(Resources.BackupNotFound, backupFilePath);
                     }
 
                     // 임시 폴더에 압축 해제
@@ -130,7 +131,7 @@ namespace StartMenuBackupTool.Services
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception($"백업 복원 중 오류가 발생했습니다: {ex.Message}", ex);
+                    throw new Exception($"{Resources.RestoreError}: {ex.Message}", ex);
                 }
             });
         }
@@ -197,7 +198,7 @@ namespace StartMenuBackupTool.Services
                     // 무시
                 }
 
-                throw new Exception($"Explorer 재시작 중 오류가 발생했습니다: {ex.Message}", ex);
+                throw new Exception($"{Resources.Error}: {ex.Message}", ex);
             }
         }
 
@@ -256,7 +257,7 @@ namespace StartMenuBackupTool.Services
                         // 이름이 없거나 비어있는 경우 Untitled로 설정
                         if (string.IsNullOrWhiteSpace(backupInfo.Name))
                         {
-                            var baseName = "Untitled";
+                            var baseName = Resources.Untitled;
                             if (!untitledNames.ContainsKey(baseName))
                             {
                                 backupInfo.Name = baseName;
@@ -290,12 +291,12 @@ namespace StartMenuBackupTool.Services
         private string GenerateUntitledName()
         {
             var existingBackups = GetBackupListAsync().Result;
-            var untitledCount = existingBackups.Count(b => b.Name.StartsWith("Untitled"));
+            var untitledCount = existingBackups.Count(b => b.Name.StartsWith(Resources.Untitled));
 
             if (untitledCount == 0)
-                return "Untitled";
+                return Resources.Untitled;
 
-            return $"Untitled ({untitledCount + 1})";
+            return $"{Resources.Untitled} ({untitledCount + 1})";
         }
 
         // 백업 파일 유효성 검사
@@ -359,7 +360,7 @@ namespace StartMenuBackupTool.Services
                 {
                     if (!File.Exists(backupInfo.BackupPath))
                     {
-                        throw new FileNotFoundException("백업 파일을 찾을 수 없습니다.", backupInfo.BackupPath);
+                        throw new FileNotFoundException(Resources.BackupNotFound, backupInfo.BackupPath);
                     }
 
                     // 임시 파일 경로
@@ -410,7 +411,7 @@ namespace StartMenuBackupTool.Services
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception($"백업 메타데이터 업데이트 중 오류가 발생했습니다: {ex.Message}", ex);
+                    throw new Exception($"{Resources.Error}: {ex.Message}", ex);
                 }
             });
         }

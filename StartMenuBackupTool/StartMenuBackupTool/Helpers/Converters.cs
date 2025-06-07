@@ -2,6 +2,7 @@ using System.Globalization;
 using System.IO;
 using System.Windows;
 using System.Windows.Data;
+using StartMenuBackupTool.Properties;
 
 namespace StartMenuBackupTool.Helpers
 {
@@ -78,12 +79,34 @@ namespace StartMenuBackupTool.Helpers
         {
             if (value is string filePath && !string.IsNullOrWhiteSpace(filePath))
             {
-                return $"파일: {Path.GetFileName(filePath)}";
+                return $"{Resources.File}{Path.GetFileName(filePath)}";
             }
             return string.Empty;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    // Date format converter for localization
+    public class DateFormatConverter : IMultiValueConverter
+    {
+        public static readonly DateFormatConverter Instance = new();
+
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (values.Length >= 2 && values[0] is DateTime date && values[1] is double sizeKb)
+            {
+                var dateFormat = Resources.DateFormat;
+                var formattedDate = string.Format(dateFormat, date);
+                return $"{formattedDate} • {sizeKb:N0} KB";
+            }
+            return string.Empty;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }

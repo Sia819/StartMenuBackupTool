@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(echo $HOME)",
+      "Bash(dotnet build:*)",
+      "Bash(grep:*)",
+      "Bash(wget:*)",
+      "Bash(chmod:*)",
+      "Bash(./dotnet-install.sh:*)",
+      "Bash(export PATH=$PATH:$HOME/.dotnet)",
+      "Bash(dotnet --version)",
+      "Bash(export:*)"
+    ],
+    "deny": []
+  }
+}

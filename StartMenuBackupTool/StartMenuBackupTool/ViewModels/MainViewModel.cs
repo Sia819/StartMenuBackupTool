@@ -5,6 +5,7 @@ using StartMenuBackupTool.Views;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
+using System.Globalization;
 
 namespace StartMenuBackupTool.ViewModels
 {
@@ -17,12 +18,22 @@ namespace StartMenuBackupTool.ViewModels
         private string _newBackupName = string.Empty;
         private string _newBackupDescription = string.Empty;
         private bool _isProcessing;
-        private string _statusMessage = "준비됨";
+        private string _statusMessage = Properties.Resources.Ready;
+        private bool _isKoreanSelected;
+        private bool _isEnglishSelected;
+        private string _selectedLanguage = "ko-KR";
 
         public MainViewModel()
         {
             _backupService = new StartMenuBackupService();
             _backups = new ObservableCollection<BackupInfo>();
+            
+            // Initialize language items
+            AvailableLanguages = new ObservableCollection<LanguageItem>
+            {
+                new LanguageItem("ko-KR", "한국어", "🇰🇷"),
+                new LanguageItem("en-US", "English", "🇺🇸")
+            };
 
             // 명령 초기화
             CreateBackupCommand = new RelayCommand(async _ => await CreateBackupAsync(), _ => !IsProcessing && !string.IsNullOrWhiteSpace(NewBackupName));
@@ -30,6 +41,10 @@ namespace StartMenuBackupTool.ViewModels
             RefreshBackupsCommand = new RelayCommand(async _ => await LoadBackupsAsync(), _ => !IsProcessing);
             DeleteBackupCommand = new RelayCommand(async _ => await DeleteBackupAsync(), _ => !IsProcessing && SelectedBackup != null);
             EditBackupCommand = new RelayCommand(async _ => await EditBackupAsync(), _ => !IsProcessing && SelectedBackup != null);
+            ChangeLanguageCommand = new RelayCommand(ChangeLanguage);
+
+            // 언어 설정 초기화
+            InitializeLanguage();
 
             // 초기 로드
             _ = LoadBackupsAsync();
@@ -88,13 +103,62 @@ namespace StartMenuBackupTool.ViewModels
         public ICommand RefreshBackupsCommand { get; }
         public ICommand DeleteBackupCommand { get; }
         public ICommand EditBackupCommand { get; }
+        public ICommand ChangeLanguageCommand { get; }
+
+        public bool IsKoreanSelected
+        {
+            get => _isKoreanSelected;
+            set => SetProperty(ref _isKoreanSelected, value);
+        }
+
+        public bool IsEnglishSelected
+        {
+            get => _isEnglishSelected;
+            set => SetProperty(ref _isEnglishSelected, value);
+        }
+
+        // UI Text Properties for dynamic language switching
+        public string AppTitle => Properties.Resources.AppTitle;
+        public string AppDescription => Properties.Resources.AppDescription;
+        public string NewBackup => Properties.Resources.NewBackup;
+        public string BackupName => Properties.Resources.BackupName;
+        public string Description => Properties.Resources.Description;
+        public string BackupList => Properties.Resources.BackupList;
+        public string CreateBackupText => Properties.Resources.CreateBackup;
+        public string Refresh => Properties.Resources.Refresh;
+        public string Edit => Properties.Resources.Edit;
+        public string Restore => Properties.Resources.Restore;
+        public string Delete => Properties.Resources.Delete;
+        public string EditBackupInfo => Properties.Resources.EditBackupInfo;
+        public string Cancel => Properties.Resources.Cancel;
+        public string Save => Properties.Resources.Save;
+        public string Language => Properties.Resources.Language;
+        public string Korean => Properties.Resources.Korean;
+        public string English => Properties.Resources.English;
+        
+        // Language Selection Properties
+        public ObservableCollection<LanguageItem> AvailableLanguages { get; }
+        
+        public LanguageItem? SelectedLanguageItem
+        {
+            get => AvailableLanguages?.FirstOrDefault(l => l.Code == _selectedLanguage);
+            set
+            {
+                if (value != null && value.Code != _selectedLanguage)
+                {
+                    _selectedLanguage = value.Code;
+                    OnPropertyChanged();
+                    ChangeLanguage(value.Code);
+                }
+            }
+        }
 
         private async Task LoadBackupsAsync()
         {
             try
             {
                 IsProcessing = true;
-                StatusMessage = "백업 목록을 불러오는 중...";
+                StatusMessage = Properties.Resources.LoadingBackups;
 
                 var backups = await _backupService.GetBackupListAsync();
 
@@ -107,12 +171,12 @@ namespace StartMenuBackupTool.ViewModels
                     }
                 });
 
-                StatusMessage = $"{backups.Count}개의 백업을 찾았습니다.";
+                StatusMessage = string.Format(Properties.Resources.BackupsFound, backups.Count);
             }
             catch (Exception ex)
             {
-                StatusMessage = $"오류: {ex.Message}";
-                MessageBox.Show($"백업 목록을 불러오는 중 오류가 발생했습니다:\n{ex.Message}", "오류", MessageBoxButton.OK, MessageBoxImage.Error);
+                StatusMessage = $"{Properties.Resources.Error}: {ex.Message}";
+                MessageBox.Show($"{Properties.Resources.LoadingBackups}\n{ex.Message}", Properties.Resources.Error, MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
@@ -125,7 +189,7 @@ namespace StartMenuBackupTool.ViewModels
             try
             {
                 IsProcessing = true;
-                StatusMessage = "백업을 생성하는 중...";
+                StatusMessage = Properties.Resources.CreatingBackup;
 
                 var backup = await _backupService.CreateBackupAsync(NewBackupName, NewBackupDescription);
 
@@ -136,13 +200,13 @@ namespace StartMenuBackupTool.ViewModels
                     NewBackupDescription = string.Empty;
                 });
 
-                StatusMessage = "백업이 성공적으로 생성되었습니다.";
-                MessageBox.Show("시작 메뉴 백업이 성공적으로 생성되었습니다.", "성공", MessageBoxButton.OK, MessageBoxImage.Information);
+                StatusMessage = Properties.Resources.BackupCreated;
+                MessageBox.Show(Properties.Resources.BackupCreated, Properties.Resources.AppTitle, MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                StatusMessage = $"오류: {ex.Message}";
-                MessageBox.Show($"백업 생성 중 오류가 발생했습니다:\n{ex.Message}", "오류", MessageBoxButton.OK, MessageBoxImage.Error);
+                StatusMessage = $"{Properties.Resources.Error}: {ex.Message}";
+                MessageBox.Show($"{Properties.Resources.BackupCreationError}\n{ex.Message}", Properties.Resources.Error, MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
@@ -155,14 +219,8 @@ namespace StartMenuBackupTool.ViewModels
             if (SelectedBackup == null) return;
 
             var result = MessageBox.Show(
-                $"'{SelectedBackup.Name}' 백업을 복원하시겠습니까?\n\n" +
-                "주의사항:\n" +
-                "• 현재 시작 메뉴 설정이 덮어써집니다\n" +
-                "• Explorer가 자동으로 재시작됩니다\n" +
-                "• 잠시 화면이 깜빡일 수 있습니다\n" +
-                "• 열려있는 파일 탐색기 창이 닫힙니다\n\n" +
-                "계속하시겠습니까?",
-                "백업 복원 확인",
+                Properties.Resources.ConfirmRestore,
+                Properties.Resources.Restore,
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Warning);
 
@@ -171,21 +229,21 @@ namespace StartMenuBackupTool.ViewModels
             try
             {
                 IsProcessing = true;
-                StatusMessage = "백업을 복원하는 중...";
+                StatusMessage = Properties.Resources.RestoringBackup;
 
                 await _backupService.RestoreBackupAsync(SelectedBackup.BackupPath);
 
-                StatusMessage = "백업이 성공적으로 복원되었습니다.";
+                StatusMessage = Properties.Resources.BackupRestored;
                 MessageBox.Show(
-                    "시작 메뉴 백업이 성공적으로 복원되었습니다.\n\nExplorer가 재시작되어 변경사항이 즉시 적용됩니다.",
-                    "성공",
+                    Properties.Resources.BackupRestored,
+                    Properties.Resources.AppTitle,
                     MessageBoxButton.OK,
                     MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                StatusMessage = $"오류: {ex.Message}";
-                MessageBox.Show($"백업 복원 중 오류가 발생했습니다:\n{ex.Message}", "오류", MessageBoxButton.OK, MessageBoxImage.Error);
+                StatusMessage = $"{Properties.Resources.Error}: {ex.Message}";
+                MessageBox.Show($"{Properties.Resources.RestoreError}\n{ex.Message}", Properties.Resources.Error, MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
@@ -220,7 +278,7 @@ namespace StartMenuBackupTool.ViewModels
                 if (dialog.ShowDialog() == true)
                 {
                     IsProcessing = true;
-                    StatusMessage = "백업 정보를 업데이트하는 중...";
+                    StatusMessage = Properties.Resources.Save;
 
                     // 서비스를 통해 메타데이터 업데이트
                     await _backupService.UpdateBackupMetadataAsync(backupCopy);
@@ -242,13 +300,13 @@ namespace StartMenuBackupTool.ViewModels
                         }
                     });
 
-                    StatusMessage = "백업 정보가 업데이트되었습니다.";
+                    StatusMessage = Properties.Resources.Save;
                 }
             }
             catch (Exception ex)
             {
-                StatusMessage = $"오류: {ex.Message}";
-                MessageBox.Show($"백업 정보 수정 중 오류가 발생했습니다:\n{ex.Message}", "오류", MessageBoxButton.OK, MessageBoxImage.Error);
+                StatusMessage = $"{Properties.Resources.Error}: {ex.Message}";
+                MessageBox.Show($"{Properties.Resources.Error}\n{ex.Message}", Properties.Resources.Error, MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
@@ -261,8 +319,8 @@ namespace StartMenuBackupTool.ViewModels
             if (SelectedBackup == null) return;
 
             var result = MessageBox.Show(
-                $"'{SelectedBackup.Name}' 백업을 삭제하시겠습니까?",
-                "백업 삭제 확인",
+                string.Format(Properties.Resources.ConfirmDelete, SelectedBackup.Name),
+                Properties.Resources.Delete,
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Question);
 
@@ -271,7 +329,7 @@ namespace StartMenuBackupTool.ViewModels
             try
             {
                 IsProcessing = true;
-                StatusMessage = "백업을 삭제하는 중...";
+                StatusMessage = Properties.Resources.DeletingBackup;
 
                 await Task.Run(() =>
                 {
@@ -287,17 +345,91 @@ namespace StartMenuBackupTool.ViewModels
                     SelectedBackup = null;
                 });
 
-                StatusMessage = "백업이 삭제되었습니다.";
+                StatusMessage = Properties.Resources.BackupDeleted;
             }
             catch (Exception ex)
             {
-                StatusMessage = $"오류: {ex.Message}";
-                MessageBox.Show($"백업 삭제 중 오류가 발생했습니다:\n{ex.Message}", "오류", MessageBoxButton.OK, MessageBoxImage.Error);
+                StatusMessage = $"{Properties.Resources.Error}: {ex.Message}";
+                MessageBox.Show($"{Properties.Resources.Error}\n{ex.Message}", Properties.Resources.Error, MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
                 IsProcessing = false;
             }
+        }
+
+        private void InitializeLanguage()
+        {
+            LanguageManager.Instance.InitializeLanguage();
+            UpdateLanguageSelection();
+
+            LanguageManager.Instance.LanguageChanged += (sender, culture) =>
+            {
+                UpdateLanguageSelection();
+                RefreshUI();
+                
+                // Update MainWindow title manually
+                if (Application.Current.MainWindow != null)
+                {
+                    Application.Current.MainWindow.Title = Properties.Resources.AppTitle;
+                }
+            };
+        }
+
+        private void UpdateLanguageSelection()
+        {
+            var currentCulture = LanguageManager.Instance.CurrentCulture.Name;
+            IsKoreanSelected = currentCulture == "ko-KR";
+            IsEnglishSelected = currentCulture == "en-US";
+            _selectedLanguage = currentCulture;
+            OnPropertyChanged(nameof(SelectedLanguageItem));
+        }
+
+        private void ChangeLanguage(object? parameter)
+        {
+            if (parameter is string cultureCode)
+            {
+                LanguageManager.Instance.SetLanguage(cultureCode);
+            }
+        }
+
+        private void RefreshUI()
+        {
+            // UI 텍스트 업데이트
+            StatusMessage = Properties.Resources.Ready;
+            
+            // Notify all UI text properties
+            OnPropertyChanged(nameof(AppTitle));
+            OnPropertyChanged(nameof(AppDescription));
+            OnPropertyChanged(nameof(NewBackup));
+            OnPropertyChanged(nameof(BackupName));
+            OnPropertyChanged(nameof(Description));
+            OnPropertyChanged(nameof(BackupList));
+            OnPropertyChanged(nameof(CreateBackupText));
+            OnPropertyChanged(nameof(Refresh));
+            OnPropertyChanged(nameof(Edit));
+            OnPropertyChanged(nameof(Restore));
+            OnPropertyChanged(nameof(Delete));
+            OnPropertyChanged(nameof(EditBackupInfo));
+            OnPropertyChanged(nameof(Cancel));
+            OnPropertyChanged(nameof(Save));
+            OnPropertyChanged(nameof(Language));
+            OnPropertyChanged(nameof(Korean));
+            OnPropertyChanged(nameof(English));
+            
+            // Refresh the backups list to update date formats
+            foreach (var backup in Backups)
+            {
+                backup.RefreshDateDisplay();
+            }
+            OnPropertyChanged(nameof(Backups));
+            
+            // Force refresh of all commands to update their CanExecute states
+            (CreateBackupCommand as RelayCommand)?.RaiseCanExecuteChanged();
+            (RestoreBackupCommand as RelayCommand)?.RaiseCanExecuteChanged();
+            (RefreshBackupsCommand as RelayCommand)?.RaiseCanExecuteChanged();
+            (DeleteBackupCommand as RelayCommand)?.RaiseCanExecuteChanged();
+            (EditBackupCommand as RelayCommand)?.RaiseCanExecuteChanged();
         }
     }
 }

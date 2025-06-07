@@ -10,7 +10,7 @@
 dotnet build StartMenuBackupTool/StartMenuBackupTool/StartMenuBackupTool.csproj
 
 # 애플리케이션 실행 (관리자 권한 필요)
-dotnet run --project StartMenuBackupTool/StartMenuBackupTool/StartMenuBackupTool.csproj
+sudo dotnet run --project StartMenuBackupTool/StartMenuBackupTool/StartMenuBackupTool.csproj
 
 # 릴리스 버전 빌드
 dotnet build -c Release StartMenuBackupTool/StartMenuBackupTool/StartMenuBackupTool.csproj
@@ -70,3 +70,6 @@ CONTRIBUTING.md로부터:
 2. **탐색기 재시작**: 복원 작업 후 Explorer.exe가 자동으로 재시작됨
 3. **외부 종속성 없음**: .NET 내장 압축 라이브러리만 사용
 4. **Windows 11 전용**: Windows 10과 다른 Windows 11 시작 메뉴 구조를 대상으로 함
+```
+
+</rewritten_file>

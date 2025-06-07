@@ -1,6 +1,7 @@
 ﻿using System.Configuration;
 using System.Data;
 using System.Windows;
+using StartMenuBackupTool.Services;
 
 namespace StartMenuBackupTool
 {
@@ -9,6 +10,13 @@ namespace StartMenuBackupTool
     /// </summary>
     public partial class App : Application
     {
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+            
+            // Initialize language settings on application startup
+            LanguageManager.Instance.InitializeLanguage();
+        }
     }
 
 }

@@ -5,13 +5,29 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:helper="clr-namespace:StartMenuBackupTool.Helpers"
         xmlns:local="clr-namespace:StartMenuBackupTool"
+        xmlns:props="clr-namespace:StartMenuBackupTool.Properties"
         mc:Ignorable="d"
-        Title="Windows 11 시작 메뉴 백업 도구" 
+        Title="{Binding AppTitle}" 
         Height="650" Width="1000"
         WindowStartupLocation="CenterScreen"
         MinHeight="550" MinWidth="800">
 
     <Window.Resources>
+        <!-- Simple Language ComboBox Style -->
+        <Style x:Key="LanguageComboBox" TargetType="ComboBox">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#DDDDDD"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Style.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}" Color="White" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#0078D4" />
+            </Style.Resources>
+        </Style>
+        
         <!-- Modern Colors -->
         <SolidColorBrush x:Key="PrimaryColor" Color="#0078D4"/>
         <SolidColorBrush x:Key="SecondaryColor" Color="#005A9E"/>
@@ -127,15 +143,40 @@
 
         <!-- Header -->
         <Border Grid.Row="0" Background="{StaticResource PrimaryColor}" Padding="20">
-            <StackPanel>
-                <TextBlock Text="Windows 11 시작 메뉴 백업 도구" 
-                           FontSize="24" FontWeight="Bold" 
-                           Foreground="White"/>
-                <TextBlock Text="시작 메뉴 레이아웃을 백업하고 복원합니다" 
-                           FontSize="14" 
-                           Foreground="#E0E0E0" 
-                           Margin="0,5,0,0"/>
-            </StackPanel>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="{Binding AppTitle}" 
+                               FontSize="24" FontWeight="Bold" 
+                               Foreground="White"/>
+                    <TextBlock Text="{Binding AppDescription}" 
+                               FontSize="14" 
+                               Foreground="#E0E0E0" 
+                               Margin="0,5,0,0"/>
+                </StackPanel>
+                
+                <!-- Language Dropdown -->
+                <ComboBox Grid.Column="1" 
+                          VerticalAlignment="Top"
+                          HorizontalAlignment="Right"
+                          Width="140"
+                          ItemsSource="{Binding AvailableLanguages}"
+                          SelectedItem="{Binding SelectedLanguageItem}"
+                          Style="{StaticResource LanguageComboBox}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Flag}" Margin="0,0,8,0" FontSize="16"/>
+                                <TextBlock Text="{Binding DisplayName}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </Grid>
         </Border>
 
         <!-- Main Content -->
@@ -156,19 +197,19 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0" Text="새 백업 만들기" 
+                    <TextBlock Grid.Row="0" Text="{Binding NewBackup}" 
                                FontSize="20" FontWeight="SemiBold" 
                                Margin="0,0,0,20"/>
 
                     <StackPanel Grid.Row="1">
-                        <TextBlock Text="백업 이름" FontWeight="Medium" Margin="0,0,0,5"/>
+                        <TextBlock Text="{Binding BackupName}" FontWeight="Medium" Margin="0,0,0,5"/>
                         <TextBox Text="{Binding NewBackupName, UpdateSourceTrigger=PropertyChanged}" 
                                  Style="{StaticResource ModernTextBox}"
                                  Margin="0,0,0,15"/>
                     </StackPanel>
 
                     <StackPanel Grid.Row="2">
-                        <TextBlock Text="설명 (선택사항)" FontWeight="Medium" Margin="0,0,0,5"/>
+                        <TextBlock Text="{Binding Description}" FontWeight="Medium" Margin="0,0,0,5"/>
                         <TextBox Text="{Binding NewBackupDescription}" 
                                  Style="{StaticResource ModernTextBox}"
                                  Height="80"
@@ -184,7 +225,7 @@
                             HorizontalAlignment="Stretch">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="➕" Margin="0,0,10,0" FontSize="16"/>
-                            <TextBlock Text="백업 생성"/>
+                            <TextBlock Text="{Binding CreateBackupText}"/>
                         </StackPanel>
                     </Button>
                 </Grid>
@@ -200,14 +241,20 @@
                     </Grid.RowDefinitions>
 
                     <Grid Grid.Row="0" Margin="0,0,0,20">
-                        <TextBlock Text="백업 목록" 
+                        <TextBlock Text="{Binding BackupList}" 
                                    FontSize="20" FontWeight="SemiBold" 
                                    VerticalAlignment="Center"/>
                         <Button Command="{Binding RefreshBackupsCommand}"
                                 Style="{StaticResource ModernButton}"
                                 HorizontalAlignment="Right"
                                 Padding="10,5">
-                            <TextBlock Text="🔄 새로고침" FontSize="12"/>
+                            <TextBlock FontSize="12">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="🔄 {0}">
+                                        <Binding Path="Refresh"/>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
                         </Button>
                     </Grid>
 
@@ -259,7 +306,7 @@
                                                    FontSize="16"/>
                                         <TextBlock FontSize="12" Foreground="#666666">
                                             <TextBlock.Text>
-                                                <MultiBinding StringFormat="{}{0:yyyy년 MM월 dd일 HH:mm} • {1:N0} KB">
+                                                <MultiBinding Converter="{x:Static helper:DateFormatConverter.Instance}">
                                                     <Binding Path="BackupDate"/>
                                                     <Binding Path="FileSize" Converter="{x:Static helper:FileSizeConverter.Instance}"/>
                                                 </MultiBinding>
@@ -297,7 +344,7 @@
                                 Margin="0,0,10,0">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="✏️" Margin="0,0,10,0" FontSize="16"/>
-                                <TextBlock Text="편집"/>
+                                <TextBlock Text="{Binding Edit}"/>
                             </StackPanel>
                         </Button>
                         <Button Command="{Binding RestoreBackupCommand}"
@@ -305,14 +352,14 @@
                                 Margin="0,0,10,0">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="♻️" Margin="0,0,10,0" FontSize="16"/>
-                                <TextBlock Text="복원"/>
+                                <TextBlock Text="{Binding Restore}"/>
                             </StackPanel>
                         </Button>
                         <Button Command="{Binding DeleteBackupCommand}"
                                 Style="{StaticResource DangerButton}">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="🗑️" Margin="0,0,10,0" FontSize="16"/>
-                                <TextBlock Text="삭제"/>
+                                <TextBlock Text="{Binding Delete}"/>
                             </StackPanel>
                         </Button>
                     </StackPanel>

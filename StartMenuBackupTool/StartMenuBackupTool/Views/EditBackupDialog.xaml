@@ -3,8 +3,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:props="clr-namespace:StartMenuBackupTool.Properties"
         mc:Ignorable="d"
-        Title="백업 정보 편집" 
+        Title="{Binding EditBackupInfoTitle}" 
         MinHeight="300" MinWidth="400"
         MaxHeight="600" MaxWidth="700"
         WindowStartupLocation="CenterOwner"
@@ -82,7 +83,7 @@
 
         <!-- Header -->
         <Border Grid.Row="0" Background="{StaticResource PrimaryColor}" Padding="20,15">
-            <TextBlock Text="백업 정보 편집" 
+            <TextBlock Text="{Binding EditBackupInfoTitle}" 
                        FontSize="18" 
                        FontWeight="SemiBold" 
                        Foreground="White"/>
@@ -97,7 +98,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0"
-                       Text="백업 이름" 
+                       Text="{Binding BackupNameLabel}" 
                        FontWeight="Medium" 
                        Margin="0,0,0,5"/>
             <TextBox Grid.Row="1"
@@ -106,7 +107,7 @@
                      Margin="0,0,0,20"/>
 
             <TextBlock Grid.Row="2"
-                       Text="설명 (선택사항)" 
+                       Text="{Binding DescriptionLabel}" 
                        FontWeight="Medium" 
                        Margin="0,0,0,5"/>
             <TextBox Grid.Row="3"
@@ -125,7 +126,7 @@
                 Padding="20,15">
             <StackPanel Orientation="Horizontal" 
                         HorizontalAlignment="Right">
-                <Button Content="취소" 
+                <Button Content="{Binding CancelText}" 
                         Click="CancelButton_Click">
                     <Button.Style>
                         <Style TargetType="Button" BasedOn="{StaticResource ModernButton}">
@@ -138,7 +139,7 @@
                         </Style>
                     </Button.Style>
                 </Button>
-                <Button Content="저장" 
+                <Button Content="{Binding SaveText}" 
                         Style="{StaticResource ModernButton}"
                         Click="SaveButton_Click"/>
             </StackPanel>
