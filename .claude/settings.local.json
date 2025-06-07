@@ -1,6 +1,7 @@
 {
   "permissions": {
     "allow": [
+      "Bash(*)",
       "Bash(echo $HOME)",
       "Bash(dotnet build:*)",
       "Bash(grep:*)",
@@ -9,7 +10,16 @@
       "Bash(./dotnet-install.sh:*)",
       "Bash(export PATH=$PATH:$HOME/.dotnet)",
       "Bash(dotnet --version)",
-      "Bash(export:*)"
+      "Bash(export:*)",
+      "Bash(dotnet publish:*)",
+      "Bash(ls:*)",
+      "Bash(sha256sum:*)",
+      "Bash(mkdir:*)",
+      "Bash(cp:*)",
+      "Bash(tar:*)",
+      "Bash(find:*)",
+      "Bash(mv:*)",
+      "Bash(rm:*)"
     ],
     "deny": []
   }
