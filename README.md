@@ -3,7 +3,7 @@
 <div align="center">
   <img src="Images/main-window.png" alt="메인 화면" width="800"/>
   
-  [![GitHub release](https://img.shields.io/github/v/release/yourusername/StartMenuBackupTool?include_prereleases)](https://github.com/yourusername/StartMenuBackupTool/releases)
+  [![GitHub release](https://img.shields.io/github/v/release/sia819/StartMenuBackupTool?include_prereleases)](https://github.com/sia819/StartMenuBackupTool/releases)
   [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
   [![.NET](https://img.shields.io/badge/.NET-8.0-512BD4?style=flat-square&logo=.net)](https://dotnet.microsoft.com/)
   [![WPF](https://img.shields.io/badge/WPF-MVVM-0078D4?style=flat-square)](https://docs.microsoft.com/en-us/dotnet/desktop/wpf/)
@@ -13,7 +13,7 @@
 ## 📥 다운로드
 
 ### 최신 버전 (Beta)
-[![Download](https://img.shields.io/badge/Download-v0.1.0%20Beta-blue.svg)](https://github.com/yourusername/StartMenuBackupTool/releases/latest)
+[![Download](https://img.shields.io/badge/Download-v0.1.0%20Beta-blue.svg)](https://github.com/sia819/StartMenuBackupTool/releases/latest)
 
 - **파일**: StartMenuBackupTool.exe (162MB)
 - **버전**: v0.1.0 (Beta)
@@ -37,12 +37,12 @@ Windows 11 시작 메뉴 백업 도구는 Windows 11의 시작 메뉴 레이아�
 ## 🖼️ 스크린샷
 
 ### 메인 화면
-<img src="Images/main-window.png" alt="메인 화면" width="700"/>
+<img src="Images/main-window.png" alt="메인 화면" width="500"/>
 
 *백업 생성 및 관리가 가능한 메인 인터페이스*
 
 ### 백업 편집
-<img src="Images/edit-dialog.png" alt="백업 편집" width="400"/>
+<img src="Images/edit-dialog.png" alt="백업 편집" width="500"/>
 
 *백업 이름과 설명을 수정할 수 있는 편집 다이얼로그*
 
@@ -61,7 +61,7 @@ Windows 11 시작 메뉴 백업 도구는 Windows 11의 시작 메뉴 레이아�
 
 ### 설치 방법
 
-1. [최신 릴리즈](https://github.com/yourusername/StartMenuBackupTool/releases/latest)에서 `StartMenuBackupTool.exe` 다운로드
+1. [최신 릴리즈](https://github.com/sia819/StartMenuBackupTool/releases/latest)에서 `StartMenuBackupTool.exe` 다운로드
 2. 다운로드한 파일을 원하는 위치로 이동
 3. 마우스 오른쪽 클릭 → "관리자 권한으로 실행"
 4. Windows Defender SmartScreen 경고가 나타나면 "추가 정보" → "실행"
@@ -70,7 +70,7 @@ Windows 11 시작 메뉴 백업 도구는 Windows 11의 시작 메뉴 레이아�
 
 ```bash
 # 저장소 클론
-git clone https://github.com/yourusername/StartMenuBackupTool.git
+git clone https://github.com/sia819/StartMenuBackupTool.git
 
 # 프로젝트 디렉토리로 이동
 cd StartMenuBackupTool/StartMenuBackupTool
@@ -186,18 +186,12 @@ StartMenuBackupTool/
 
 ## 🚀 릴리스 노트
 
-### v0.1.0 (Beta) - 2024-06-07
+### v0.1.0 - 2024-06-07
 - 🎉 첫 베타 릴리스
 - ✨ 기본 백업/복원 기능 구현
 - 🌐 한국어/영어 다국어 지원
 - 📝 백업 편집 기능
 - 🎨 Windows 11 스타일 UI
-
-### 향후 계획
-- **v0.2.0**: 버그 수정 및 안정성 개선
-- **v0.3.0**: 자동 백업 기능
-- **v0.4.0**: 백업 스케줄링
-- **v1.0.0**: 정식 릴리스
 
 ## 🤝 기여하기
 
@@ -234,7 +228,7 @@ StartMenuBackupTool/
 
 ## 📞 문의
 
-프로젝트 관련 문의사항이 있으시면 [Issues](https://github.com/yourusername/StartMenuBackupTool/issues) 탭을 이용해 주세요.
+프로젝트 관련 문의사항이 있으시면 [Issues](https://github.com/sia819/StartMenuBackupTool/issues) 탭을 이용해 주세요.
 
 ## ⚠️ 주의사항
 
@@ -247,8 +241,8 @@ StartMenuBackupTool/
 
 <div align="center">
   Made with ❤️ for Windows 11 users
-  
+  <br/>
   <br/>
   
-  [![GitHub stars](https://img.shields.io/github/stars/yourusername/StartMenuBackupTool?style=social)](https://github.com/yourusername/StartMenuBackupTool)
+  [![GitHub stars](https://img.shields.io/github/stars/sia819/StartMenuBackupTool?style=social)](https://github.com/sia819/StartMenuBackupTool)
 </div>
